@@ -1,0 +1,190 @@
+import{test, expect} from '@playwright/test'
+
+test('Checkbox@smoke', async({page}) => {
+
+    await page.goto('https://demoapps.qspiders.com/ui/link?sublist=0')
+    await page.getByText('Check Box').click()
+    await page.locator('#domain_a').check()
+    await page.waitForTimeout(1000)
+    await expect(page.locator('#domain_a')).toBeChecked()
+    await page.waitForTimeout(1000)
+    await page.locator('#domain_d').check()
+    await page.waitForTimeout(1000)
+    await expect(page.locator('#domain_d')).toBeChecked()
+    await page.waitForTimeout(1000)
+    await page.locator('#domain_a').uncheck()
+    await page.waitForTimeout(1000)
+    await expect( page.locator('#domain_a')).not.toBeChecked() //negative assertion using 'not
+    await page.waitForTimeout(1000)
+
+});
+
+test('Radiobutton', async({page}) => {
+     await page.goto('https://demoapps.qspiders.com/ui/link?sublist=0')
+     await page.getByText('Radio Button').click()
+     await page.waitForTimeout(1000)
+     await page.locator("//input[@value='Upi']").check()
+     await page.waitForTimeout(1000)
+     await expect(page.locator("//input[@value='Upi']")).toBeChecked()
+     await page.locator('#willin_b').check()
+     await page.waitForTimeout(1000)
+    //await page.locator("//input[@value='Upi']").uncheck()
+    await page.waitForTimeout(1000)
+       
+});
+
+test('Singleselect dropdown', async({page}) => {
+
+    await page.goto('https://demoapps.qspiders.com/ui/link?sublist=0')
+    await page.getByText('Dropdown', {exact:true}).click()
+    await page.waitForTimeout(1000)
+    await page.locator('#country_code').selectOption('+92')
+    await expect(page.locator('#country_code')).toHaveValue('+92')
+    await page.waitForTimeout(1000)
+    await page.locator('#select3').selectOption('India')
+    await expect(page.locator('#select3')).toHaveValue('India')
+    await page.waitForTimeout(1000)
+    
+});
+
+test('multiselect dropdown', async({page}) => {
+    await page.goto('https://demoapps.qspiders.com/ui/link?sublist=0')
+    await page.getByText('Dropdown', {exact:true}).click()
+    await page.getByRole('link', {name:'Multi Select'}).click()
+    await page.waitForTimeout(1000)
+    await page.locator('#select-multiple-native').selectOption(['Mens Casual Premium ...', 'White Gold Plated Pr...' , 'Mens Cotton Jacket...'])
+    await page.waitForTimeout(1000)
+    await page.getByRole('button', {name:'Add'}).click()
+    await page.waitForTimeout(1000)
+     let selected = await page.locator("//tbody/tr/td[1]").allInnerTexts()
+     console.log(selected);
+    expect(selected).toEqual(['Mens Casual Premium ...', 'Mens Cotton Jacket...','White Gold Plated Pr...'])
+    expect(selected).toHaveLength(3)
+    expect(selected).toContain('White Gold Plated Pr...')
+});
+
+test('mousehover@smoke', async({page}) => {
+    await page.goto('https://demoapps.qspiders.com/ui/link?sublist=0')
+    await page.getByText('Mouse Actions').click()
+    await page.waitForTimeout(1000)
+    await page.getByText('Mouse Hover', {exact:true}).click()
+    await page.waitForTimeout(1000)
+    await page.getByRole('link',{name:'Tab'}).click()
+    await page.waitForTimeout(1000)
+    await page.locator("//ul/li[@class='kids p-4 relative']").hover()
+     await page.waitForTimeout(3000)   
+});
+
+test('dboubleclick', async({page}) => {
+
+    await page.goto('https://qa-practice.netlify.app/double-click')
+    await page.getByRole('button', {name:'Double click me'}).dblclick()
+    await page.waitForTimeout(1000) 
+    await expect(page.locator('#double-click-result')).toContainText('double clicked!')
+    await page.waitForTimeout(1000) 
+    
+});
+
+test('Drap&drop', async({page}) => {
+    await page.goto('https://demoapps.qspiders.com/ui/link?sublist=0')
+    await page.getByText('Mouse Actions').click()
+    await page.getByText('Drag & Drop' ,{exact:true}).click()
+    await page.waitForTimeout(1000) 
+    await page.getByText('Drag Position').click()
+    await page.getByText('Mobile Charger').dragTo(page.getByText('Mobile Accessories'))
+    await page.waitForTimeout(1000) 
+    await page.getByText('Laptop Cover').dragTo(page.getByText('Laptop Accessories'))
+    await page.waitForTimeout(1000)
+});
+
+test('scrollintoeld4rement', async({page}) => {
+
+    await page.goto('https://www.amazon.in')
+    await page.getByRole('link',{name:'Help'}).scrollIntoViewIfNeeded()
+    await page.waitForTimeout(2000)
+});
+
+test('scrolling', async({page}) => {
+    await page.goto('https://demoapps.qspiders.com/ui/mouseHover/tab?sublist=3')
+    await page.getByText('Home & Living').hover()
+    //await page.mouse.wheel(0,100)
+    await page.getByText('Kitchen Linen Sets').scrollIntoViewIfNeeded()
+    await page.waitForTimeout(2000)
+});
+
+test('rightclick', async({page}) => {
+      await page.goto('https://demoapps.qspiders.com/ui/mouseHover/tab?sublist=3')
+    await page.getByRole('link',{name:'Tab',exact:true}).click({button: 'right'})  
+        await page.waitForTimeout(2000) 
+});
+
+test('keyboardactions', async({page}) => {
+    await page.goto('https://demoapps.qspiders.com/ui/keyboard?sublist=0')
+    await page.locator('[name="handleInput"]').click()
+    //await page.keyboard.type('Abcd')
+    await page.keyboard.press('Enter')
+    await page.waitForTimeout(2000)
+});
+
+test('Handle alert popup', async({page}) => {
+
+    await page.goto('https://demoapps.qspiders.com/ui/alert') 
+    page.on('dialog',async dialog=>{
+        console.log(dialog.message());
+        expect( dialog.message()).toContain('want to delete')
+        console.log( dialog.type());
+        expect(dialog.type()).toBe('confirm')
+        await dialog.accept()
+        //await dialog.dismiss() //to click on cancel
+        
+    })  
+    await page.locator('//tbody/tr/td/input').nth(0).check()
+
+    await page.getByRole('button' ,{name:'Delete'}).click()
+       
+     await page.waitForTimeout(2000)
+    
+});
+
+test('Handle alert popup with prompt', async({page}) => {
+
+    await page.goto('https://demoapps.qspiders.com/ui/alert') 
+    page.on('dialog',async dialog=>{
+        console.log(dialog.message());
+        expect( dialog.message()).toContain('comment')
+        console.log( dialog.type());
+        expect(dialog.type()).toBe('prompt')
+        //await dialog.accept('out of stock')
+        await dialog.dismiss() //to click on cancel
+     
+    })  
+    await page.getByRole('link',{name:'prompt'}).click()
+    await page.locator('//tbody/tr/td/input').nth(0).check()
+    await page.getByRole('button' ,{name:'Delete'}).click()  
+    await page.waitForTimeout(2000)
+    
+});
+
+test('webtable', async({page}) => {
+    await page.goto('https://demoapps.qspiders.com/ui/table/dynamicTable')
+    await page.waitForTimeout(1000)
+    let itemname = await page.locator('//tbody/tr/th[1]').allInnerTexts()
+    console.log(itemname);
+    await page.waitForTimeout(1000)
+    let discount = await page.locator('//tbody/tr/td[3]').allInnerTexts()
+    await page.waitForTimeout(1000)
+    console.log(discount);
+    let price = await page.locator('//tbody/tr/td[4]').allInnerTexts()
+    console.log(price);
+    await page.waitForTimeout(1000)
+    for (let index = 0; index < itemname.length; index++) {
+   console.log(`Item Name: ${itemname[index]}, Discount: ${discount[index]}, Price: ${price[index]}`);   
+    }
+
+await expect(itemname).toContain('HP Envy')
+await expect(itemname).toHaveLength(4)
+    
+});
+
+
+

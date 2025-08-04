@@ -1,0 +1,87 @@
+import {test,expect} from "@playwright/test"
+
+test('first test',async({page})=>{
+    test.setTimeout(60000) //setting timeout for 60 seconds
+
+    await page.goto('https://demoapps.qspiders.com/ui?scenario=1') //navigating to url
+    await expect(page).toHaveTitle('DemoApps | Qspiders | Text Box')  //assertion for title
+        //comparision of actual and expected title
+        
+
+    await page.locator('#name').fill('xyz123') //filling the name
+
+    
+    await page.fill('#name', 'fghhjgku' ) //filling with different syntax
+
+    await page.locator('#email').fill('xyz1234@gmnail.com') //filling the email
+
+    //type method
+    await page.locator('#password').fill('xyz12345') //filling the password
+    await page.waitForTimeout(2000)
+    await page.locator("//button[.='Register']").click() //clicking on register button
+    await page.waitForTimeout(2000) //wait for 2 seconds
+
+    //tag[text()='value'] //locating xpath by text
+
+    //button
+    await page.locator("//section[.='Button']").click()
+    await page.locator('#btn').click() //yes
+    await page.waitForTimeout(2000) //wait for 2 seconds
+    let v1 = await page.locator("//span[@class='text-green-600 p-1 px-2 ms-2 rounded-md']").textContent() //to get the text from eleements
+    console.log(v1) 
+
+    //assertion
+    expect(v1).toContain('Yes') //contain method  is case sensitive
+
+    //link
+    await page.getByText('Link').click() //clicking on link
+    await page.getByText('Men' , {exact:true}).click() //clicking on men link
+    await page.waitForTimeout(2000) //wait for 2 seconds
+
+    //checkbox
+
+    await page.getByText('Check Box').click() //clicking on checkbox
+    await page.locator('#domain_a').check()//checking the checkbox 
+    await page.locator('#domain_b').check()//checking the checkbox 
+    await page.locator('#domain_c').check()//checking the checkbox 
+    await page.locator('#domain_d').check()//checking the checkbox 
+     await page.waitForTimeout(2000) //wait for 2 seconds
+
+     //radio button
+     await page.getByText('Radio Button').click() //clicking on radio button    
+     await page.locator('#attended_e').check() //checking the radio button
+     await page.locator('#willin_b').check() //checking the radio button
+     await page.waitForTimeout(2000) //wait for 2 seconds
+
+     //toggle
+    //  await page.getByText('Toggle').click() //clicking on toggle
+    //  let tog1 = page.locator("//span[@class='relative bg-gray-300 rounded-full w-9 h-4 transition duration-300 ease-in-out']/input[@id='tog']")
+    //  //await expect(tog1).toBeVisible()//assertion to check if toggle is visible
+    //  await page.locator("//span[@class='relative bg-gray-300 rounded-full w-9 h-4 transition duration-300 ease-in-out']/input[@id='tog']").click({force:true}) //clicking on toggle
+
+
+     //slider
+     await page.getByText('Slider').click()
+     await page.waitForTimeout(2000) //wait for 2 seconds
+     await page.locator('#slide').click()
+     await page.waitForTimeout(2000) //wait for 2 seconds
+     await page.locator('#slide').click()
+     await page.waitForTimeout(2000) //wait for 2 seconds
+     await page.locator('#slide').click()
+     await page.waitForTimeout(2000) //wait for 2 seconds
+     await page.locator('#slide').click()
+     await page.waitForTimeout(2000) //wait for 2 seconds
+
+    
+
+                        
+})
+
+
+  
+
+//tagname[@attribute='value'] //xpath
+
+//[attributename='attributevalue'] //css selector
+
+
